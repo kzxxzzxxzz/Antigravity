@@ -6,7 +6,7 @@ import re
 import time
 import calendar
 # ページ基本設定（全幅レイアウト）
-st.set_page_config(page_title="AI News Dashboard", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="AI News Dashboard", layout="wide", initial_sidebar_state="auto")
 
 def fetch_google_news_rss(query):
     """Google News RSSから検索ワードに基づいてニュースを取得する"""
@@ -137,7 +137,6 @@ def render_news_cards(entries):
     st.markdown("".join(html_blocks), unsafe_allow_html=True)
 
 def main():
-    st.title("📰 最新ニュース")
     
     # === サイドバー：検索機能 ===
     st.sidebar.header("🔍 検索設定")
@@ -159,8 +158,25 @@ def main():
         .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
-            gap: 24px;
+            gap: 12px;
             margin-bottom: 24px;
+        }
+        
+        /* タブをスクロール時に上部へ固定（スティッキー） */
+        div[data-testid="stTabs"] > div:first-child {
+            position: sticky;
+            top: 0; /* st.set_page_configのpadding分を考慮するかゼロにするか */
+            top: 2.5rem; /* Streamlitのデフォルトヘッダーがあるため少し下げる */
+            z-index: 1000;
+            background-color: var(--background-color); /* ライトモード用の背景色 */
+            padding-top: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* Streamlitの右上のデフォルトヘッダー要素の後ろにタブが隠れないための調整 */
+        header[data-testid="stHeader"] {
+            z-index: 999;
         }
 
         /* カード側からホバーアニメーションを削除・影をすっきりと */

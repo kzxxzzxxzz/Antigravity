@@ -162,21 +162,21 @@ def main():
             margin-bottom: 24px;
         }
         
-        /* タブをスクロール時に上部へ固定（スティッキー） */
-        div[data-testid="stTabs"] > div:first-child {
-            position: sticky;
-            top: 0; /* st.set_page_configのpadding分を考慮するかゼロにするか */
-            top: 2.5rem; /* Streamlitのデフォルトヘッダーがあるため少し下げる */
-            z-index: 1000;
-            background-color: var(--background-color); /* ライトモード用の背景色 */
-            padding-top: 10px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+        /* タブメニュー（すべて、デザイン等）をスクロール時に上部へ固定 */
+        div[data-testid="stTabs"] {
+            overflow: visible !important;
         }
-        
-        /* Streamlitの右上のデフォルトヘッダー要素の後ろにタブが隠れないための調整 */
-        header[data-testid="stHeader"] {
-            z-index: 999;
+        /* バージョンによるHTML構造の違いを吸収するため複数のセレクタを指定 */
+        div[data-testid="stTabs"] > div:first-child,
+        div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+            position: -webkit-sticky !important; /* Safari対応 */
+            position: sticky !important;
+            top: 2.875rem !important; /* Streamlitの標準ヘッダーを回避する位置 */
+            background-color: #ffffff !important; /* ライトモード固定のため背景を白に */
+            z-index: 990 !important;
+            padding-top: 1rem !important;
+            padding-bottom: 0.5rem !important;
+            border-bottom: 1px solid rgba(0,0,0,0.05) !important; /* スクロール時の境界線 */
         }
 
         /* カード側からホバーアニメーションを削除・影をすっきりと */
@@ -297,7 +297,7 @@ def main():
     
     if search_keyword:
         # 情報の性質（総合、デザイン、イベント等）ごとにタブを分割
-        tab1, tab2, tab3, tab4 = st.tabs(["📰 すべて", "🎨 デザイン", "📅 イベント", "📓 note"])
+        tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📰 すべて", "🎨 デザイン", "📅 イベント", "📓 note", "🖼️ AI画像生成", "💼 フリーランス"])
         
         with tab1:
             st.subheader(f"「{search_keyword}」の最新ニュース")
@@ -333,6 +333,22 @@ def main():
                 note_entries = fetch_google_news_rss(note_query)
                 note_entries = [e for e in note_entries if not is_event_announcement(e)]
             render_news_cards(note_entries)
+
+        with tab5:
+            st.subheader("【AI画像生成】情報（デザイナー向け）")
+            with st.spinner("デザイナー向けAI画像生成記事を検索中..."):
+                ai_image_query = "画像生成 デザイン OR 画像生成 デザイナー OR 画像生成 UI OR Midjourney OR Stable Diffusion"
+                ai_image_entries = fetch_google_news_rss(ai_image_query)
+                ai_image_entries = [e for e in ai_image_entries if not is_event_announcement(e)]
+            render_news_cards(ai_image_entries)
+            
+        with tab6:
+            st.subheader("【フリーランス】情報（悩み解決・独立）")
+            with st.spinner("フリーランスの悩み解決に関する記事を検索中..."):
+                freelance_query = "フリーランス 悩み OR フリーランス 解決 OR フリーランス 独立 OR フリーランス 案件 OR 個人事業主 悩み"
+                freelance_entries = fetch_google_news_rss(freelance_query)
+                freelance_entries = [e for e in freelance_entries if not is_event_announcement(e)]
+            render_news_cards(freelance_entries)
 
 if __name__ == "__main__":
     main()

@@ -122,7 +122,6 @@ def render_news_cards(entries):
 </div>
 <div class="news-footer">
 <div class="news-date">⏳ {published}</div>
-<a href="{link}" target="_blank" class="news-link">記事を読む</a>
 </div>
 </div>"""
         html_blocks.append(card_html)
@@ -256,28 +255,7 @@ def main():
             overflow: hidden; /* コンテナからはみ出さないように */
         }
         
-        /* リンクボタンのホバーエフェクトを強調 */
-        .news-link {
-            flex-shrink: 0;
-            display: inline-block;
-            background: linear-gradient(135deg, #4A90E2, #63B3ED);
-            color: #FFFFFF !important;
-            padding: 8px 16px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.9em;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 2px 4px rgba(74, 144, 226, 0.3);
-            text-align: center;
-        }
-        .news-link:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #357ABD, #4A90E2);
-            box-shadow: 0 6px 12px rgba(74, 144, 226, 0.4);
-        }
-        
+
         .news-title a {
             color: inherit;
             text-decoration: none;
